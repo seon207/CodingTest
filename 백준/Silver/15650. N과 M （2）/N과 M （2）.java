@@ -1,42 +1,37 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.StringTokenizer;
 
-// BOJ_15650 N과 M(2)
 public class Main {
+    static int N, M;
+    static int[] list;
+    static boolean[] is_possible;
 
-	static boolean[] visited;
-	static int[] numbers;
-	static int N, M;
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
 
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine(), " ");
-		N = Integer.parseInt(st.nextToken());
-		M = Integer.parseInt(st.nextToken());
+        list = new int[M];
+        is_possible = new boolean[N + 1];
 
-		numbers = new int[M];
-		visited = new boolean[N + 1];
-		dfs(0, 1);
-	}
+        comb(0, 1);
+    }
 
-	public static void dfs(int cnt, int index) {
-		if (cnt == M) {
-			for (int num : numbers) {
-				System.out.print(num + " ");
-			}
-			System.out.println();
-			return;
-		}
-		for (int i = index; i < N + 1; i++) {
+    public static void comb(int idx, int start) {
+        if (idx == M) {
+            for (int num : list) {
+                System.out.print(num + " ");
+            }
+            System.out.println();
+            return;
+        }
 
-			numbers[cnt] = i;
-			dfs(cnt + 1, i + 1);
-		}
-
-	}
-
+        for (int i = start; i <= N; i++) {
+            list[idx] = i;
+            comb(idx + 1, i + 1);
+        }
+    }
 }

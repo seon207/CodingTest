@@ -1,96 +1,77 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.StringTokenizer;
+import java.util.*;
+import java.io.*;
 
-// BOJ_1969 DNA
 public class Main {
-    static int N, M;
-    static ArrayList<String> list;
-    static int[] cal;
-    static String result;
-    static int max_count;
+    static int N, M, count;
+    static int[][] arr;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+        StringTokenizer st = new StringTokenizer(br.readLine());
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
-        list = new ArrayList<>();
-        cal = new int[N];
-        result = "";
+
+        arr = new int[N][M];
 
         for (int i = 0; i < N; i++) {
-            list.add(br.readLine());
-        }
-
-        calculate();
-        System.out.println(result);
-
-        calCount();
-        System.out.println(max_count);
-
-    }
-
-    public static void calculate() {
-        for (int i = 0; i < M; i++) {   // 길이만큼 비교
-            int[] alphabets = new int[4];
-            for (int j = 0; j < N; j++) {   // 문자 수 비교
-                String s = list.get(j);
-                char c = s.charAt(i);
+            String s = br.readLine();
+            for (int j = 0; j < M; j++) {
+                char c = s.charAt(j);
                 switch (c) {
                     case 'A':
-                        alphabets[0]++;
+                        arr[i][j] = 0;
                         break;
-                    case 'C':
-                        alphabets[1]++;
-                        break;
-                    case 'G':
-                        alphabets[2]++;
-                        break;
-                    case 'T':
-                        alphabets[3]++;
-                        break;
-                }
-            }
-            findMax(alphabets);
-        }
-    }
 
-    public static void findMax(int[] alphabets) {
-        int max = alphabets[0]; // 첫 번째 값을 초기값으로 설정
-        int max_idx = 0;
-        for (int i = 1; i < 4; i++) {
-            if (alphabets[i] > max) {
-                max = alphabets[i];
-                max_idx = i;
-            }
-        }
-        switch (max_idx) {
-            case 0:
-                result += 'A';
-                break;
-            case 1:
-                result += 'C';
-                break;
-            case 2:
-                result += 'G';
-                break;
-            case 3:
-                result += 'T';
-                break;
-        }
-    }
-    public static void calCount() {
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < M; j++) {
-                String s = list.get(i);
-                if (s.charAt(j) != result.charAt(j)) {
-                    max_count++;
+                    case 'C':
+                        arr[i][j] = 1;
+                        break;
+
+                    case 'G':
+                        arr[i][j] = 2;
+                        break;
+
+                    case 'T':
+                        arr[i][j] = 3;
+                        break;
                 }
             }
         }
+
+        StringBuilder s = new StringBuilder();
+        for (int j = 0; j < M; j++) {
+            char[] alphabets = new char[4];
+            for (int i = 0; i < N; i++) {
+                alphabets[arr[i][j]]++;
+            }
+            int total = 0;
+            int max_idx = 0;
+            for (int k = 0; k < 4; k++) {
+                if (total < alphabets[k]) {
+                    total = alphabets[k];
+                    max_idx = k;
+                }
+            }
+
+            switch (max_idx) {
+                case 0:
+                    s.append("A");
+                    break;
+                case 1:
+                    s.append("C");
+                    break;
+                case 2:
+                    s.append("G");
+                    break;
+                case 3:
+                    s.append("T");
+                    break;
+            }
+
+            count += N - total;
+
+        }
+
+        System.out.println(s);
+        System.out.println(count);
     }
 }

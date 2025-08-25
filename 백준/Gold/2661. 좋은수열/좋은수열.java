@@ -1,44 +1,50 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Objects;
+import java.util.*;
+import java.io.*;
 
 public class Main {
     static int N;
-    static String min;
+    static String result;
+    static boolean flag;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         N = Integer.parseInt(br.readLine());
-        min = "";
-        perm(0, "");
-        System.out.println(min);
+        result = "";
+        flag = false;
+        find(0);
     }
 
-    public static void perm(int depth, String str) {
-        if (!Objects.equals(min, "")) {   // 이미 답을 찾은 상태일 때
-            return;
-        }
-
-        if (depth == N) { // 길이 완성했을 때
-            min = str;  // 1부터 진행했기 때문에 최소
-            return;
-        }
-
-        for (int i = 1; i <= 3; i++) {   // 1~3까지 계속 진행
-            if (check(str + i)) {   // 좋은 수열인 경우 계속 진행
-                perm(depth + 1, str + i);
+    public static void find(int depth) {
+        if (depth == N) {
+            if (check()) {
+                System.out.println(result);
+                flag = true;
             }
+            return;
+        }
+
+        for (int i = 1; i <= 3; i++) {
+            if (flag) {
+                return;
+            }
+            String temp = result;
+            result = result.concat(String.valueOf(i));
+            if (check()) {
+                find(depth + 1);
+            }
+            result = temp;
         }
     }
 
-    public static boolean check(String str) {
+    public static boolean check() {
+        int len = result.length();
+        for (int i = 1; i <= len / 2; i++) {
+            String f = result.substring(len - (i * 2), len - i);
+            String e = result.substring(len - i, len);
 
-        for (int i = 1; i < str.length() / 2 + 1; i++) {    // 전체 길이의 반까지만 확인
-            String first = str.substring(str.length() - i * 2, str.length() - i);
-            String second = str.substring(str.length() - i);
-
-            if (first.equals(second)) return false;
+            if (f.equals(e)) {
+                return false;
+            }
         }
         return true;
     }

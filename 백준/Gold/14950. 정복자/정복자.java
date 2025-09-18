@@ -6,7 +6,7 @@ public class Main {
     static long cost;
 
     static int[] parents;
-    static ArrayList<Edge> arrayList, first;
+    static ArrayList<Edge> arrayList;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -17,7 +17,6 @@ public class Main {
         t = Integer.parseInt(st.nextToken());
 
         arrayList = new ArrayList<>();
-        first = new ArrayList<>();
         parents = new int[N + 1];
 
         for (int i = 1; i <= N; i++) {
@@ -30,26 +29,14 @@ public class Main {
             int e = Integer.parseInt(st.nextToken());
             int c = Integer.parseInt(st.nextToken());
 
-            if (s == 1) {
-                first.add(new Edge(s, e, c));
-            } else {
-                arrayList.add(new Edge(s, e, c));
-            }
+            arrayList.add(new Edge(s, e, c));
         }
 
-        Collections.sort(first);
-        Edge e = first.get(0);
-        arrayList.addAll(first);
-
-        ArrayList<Edge> list = new ArrayList<>();
-        list.add(e);
         Collections.sort(arrayList);
-        list.addAll(arrayList);
-
 
         int idx = 0;
-        for (int i = 0; i < list.size(); i++) {
-            Edge edge = list.get(i);
+        for (int i = 0; i < arrayList.size(); i++) {
+            Edge edge = arrayList.get(i);
 
             if (union(edge.s, edge.e)) {
                 cost += edge.c;
@@ -72,7 +59,11 @@ public class Main {
             return false;
         }
 
-        parents[rootB] = rootA;
+        if (rootA < rootB) {
+            parents[rootB] = rootA;
+        } else {
+            parents[rootA] = rootB;
+        }
         return true;
     }
 

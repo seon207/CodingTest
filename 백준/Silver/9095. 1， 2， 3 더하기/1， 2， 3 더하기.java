@@ -2,25 +2,37 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static int T, n;
-    static int[] dp;
+    static int T, n, count;
+    static boolean[] visited;
+    static int[] arr;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         T = Integer.parseInt(br.readLine());
-        for (int i = 0; i < T; i++) {
+
+        visited = new boolean[4];
+        for (int t = 0; t < T; t++) {
             n = Integer.parseInt(br.readLine());
-            dp = new int[11];
-
-            dp[1] = 1;
-            dp[2] = 2;
-            dp[3] = 4;
-
-            for (int j = 4; j < 11; j++) {
-                dp[j] = dp[j - 1] + dp[j - 2] + dp[j - 3];
-            }
-
-            System.out.println(dp[n]);
+            count = 0;
+            perm(0, 1);
+            System.out.println(count);
         }
     }
+
+    public static void perm(int sum, int idx) {
+        if (sum == n) {
+            count++;
+            return;
+        }
+
+        if (sum > n) {
+            return;
+        }
+
+        for (int i = idx; i <= 3; i++) {
+            perm(sum + i, idx);
+        }
+    }
+
+
 }

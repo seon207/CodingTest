@@ -4,15 +4,14 @@ import java.util.*;
 public class Main {
     static int[] indegrees = new int[8];
     static List<List<Integer>> list;
-    static boolean flag;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder sb = new StringBuilder();
         list = new ArrayList<>();
         for (int i = 0; i <= 8; i++) {
             list.add(new ArrayList<>());
         }
-        flag = true;
         // 초기 상태
         add(1, 7);
         add(1, 4);
@@ -54,10 +53,11 @@ public class Main {
             System.out.println("Cannot complete these tasks. Going to bed.");
         } else {
             for (int i : result) {
-                System.out.print(i + " ");
+                sb.append(i).append(" ");
             }
-            System.out.println();
         }
+
+        System.out.println(sb);
     }
 
     static void add(int a, int b) {

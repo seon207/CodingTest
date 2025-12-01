@@ -1,0 +1,1 @@
+delete from person where id not in(select minId from(select min(id) as minId from person group by email) A);

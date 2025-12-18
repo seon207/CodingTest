@@ -6,13 +6,14 @@ class Solution {
 
     public int solution(String begin, String target, String[] words) {
         boolean exists = false;
-        for (String w : words) {
+        for (String w : words) {    // 이미 존재
             if (w.equals(target)) {
                 exists = true;
                 break;
             }
         }
-        if (!exists) return 0;
+        
+        if (!exists) return 0;  // 없으면 그냥 0
 
         boolean[] visited = new boolean[words.length];
         change(begin, target, visited, words, 0);
@@ -21,6 +22,7 @@ class Solution {
     }
 
     public static void change(String word, String target, boolean[] visited, String[] words, int cnt) {
+        if(count <= cnt) return;
         if (word.equals(target)) {
             count = Math.min(count, cnt);
             return;

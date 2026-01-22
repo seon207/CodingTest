@@ -3,40 +3,38 @@ import java.util.*;
 
 class Solution {
     static Map<String, Integer> map;
-
     public int[] solution(int n, String[] words) {
         map = new HashMap<>();
-        map.put(words[0], 1);  
-
-        int failIndex = -1;   
-
-        for (int i = 1; i < words.length; i++) {
-            String prev = words[i - 1];
-            String curr = words[i];
-
-            char last = prev.charAt(prev.length() - 1);
-            char first = curr.charAt(0);
-
-            if (first != last) {
-                failIndex = i;
+        int turn = 0;
+        map.put(words[0], 1);
+        for(int i = 1; i < words.length; i++){
+            String bword = words[i-1];
+            String word = words[i];
+            char last = bword.charAt(bword.length()-1);
+            char fword = word.charAt(0);
+            if(fword != last){  // 연결되지 않는 단어
+                turn = i;
                 break;
             }
-
-            if (map.containsKey(curr)) {
-                failIndex = i;
+            
+            if(map.get(words[i]) != null){  // 존재하는 단어
+                turn = i;
                 break;
+            }else{  // 존재하지 않음
+                map.put(words[i], 1);
             }
-
-            map.put(curr, 1);
+            
         }
-
-        if (failIndex == -1) {
-            return new int[]{0, 0};
+        
+        
+        int[] answer = {};
+        if(turn == 0){
+            answer = new int[]{0,0};
+        }else{
+            answer = new int[]{turn % n +1, turn / n +1};
         }
+        
 
-        int person = (failIndex % n) + 1;     
-        int round  = (failIndex / n) + 1;     
-
-        return new int[]{person, round};
+        return answer;
     }
 }

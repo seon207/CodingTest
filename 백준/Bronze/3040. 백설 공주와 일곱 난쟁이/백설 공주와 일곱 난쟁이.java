@@ -1,40 +1,39 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.util.*;
 
 public class Main {
+    static int[] arr, nums;
+    static boolean[] visited;
 
-	static int[] arr, num;
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        arr = new int[9];
+        nums = new int[9];
+        visited = new boolean[9];
+        for (int i = 0; i < 9; i++) {
+            nums[i] = Integer.parseInt(br.readLine());
+        }
 
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		arr = new int[9];
-		num = new int[7];
+        find(0, 0, 0);
+    }
 
-		for (int i = 0; i < 9; i++) {
-			arr[i] = Integer.parseInt(br.readLine());
-		}
+    public static void find(int depth, int sum, int start) {
+        if (depth == 7) {
+            if (sum == 100) {
+                for (int i = 0; i < 7; i++) {
+                    System.out.println(arr[i]);
+                }
+            }
+            return;
+        }
 
-		dfs(0, 0, 0);
-
-	}
-
-	public static void dfs(int idx, int sum, int cnt) {
-		if (cnt == 7) {
-			if (sum == 100) { // sum이 100일 때
-				for (int n : num) {
-					System.out.println(n);
-				}
-			}
-			return;
-		}
-
-		if (idx >= 9)
-			return;
-
-		num[cnt] = arr[idx];
-		dfs(idx + 1, arr[idx] + sum, cnt + 1); // 선택
-		dfs(idx + 1, sum, cnt); // 선택 x
-	}
-
+        for (int i = start; i < 9; i++) {
+            if (!visited[i]) {
+                visited[i] = true;
+                arr[depth] = nums[i];
+                find(depth + 1, sum + arr[depth], i + 1);
+                visited[i] = false;
+            }
+        }
+    }
 }

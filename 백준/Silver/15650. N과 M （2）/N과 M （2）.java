@@ -1,37 +1,40 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Main {
     static int N, M;
-    static int[] list;
-    static boolean[] is_possible;
+    static boolean[] visited;
+    static int[] arr;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
+
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
 
-        list = new int[M];
-        is_possible = new boolean[N + 1];
+        visited = new boolean[N + 1];
+        arr = new int[M];
 
         comb(0, 1);
     }
 
-    public static void comb(int idx, int start) {
-        if (idx == M) {
-            for (int num : list) {
-                System.out.print(num + " ");
+    public static void comb(int depth, int start) {
+        if (depth == M) {
+            for (int i = 0; i < M; i++) {
+                System.out.print(arr[i] + " ");
             }
             System.out.println();
             return;
         }
 
         for (int i = start; i <= N; i++) {
-            list[idx] = i;
-            comb(idx + 1, i + 1);
+            if (!visited[i]) {
+                visited[i] = true;
+                arr[depth] = i;
+                comb(depth + 1, i + 1);
+                visited[i] = false;
+            }
         }
     }
 }

@@ -1,0 +1,1 @@
+select a.author_id, b.author_name, a.category, sum(a.price * c.sales) as total_sales from book a inner join (select book_id, sales from book_sales where sales_date >= '2022-01-01' and sales_date < '2022-02-01') c on a.book_id = c.book_id inner join author b on a.author_id = b.author_id group by a.author_id, a.category order by a.author_id, a.category desc;

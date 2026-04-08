@@ -1,109 +1,100 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-    private static int N;
-    private static int[][] map;
-    private static int[][] check;
-    private static boolean[][] visited;
-    private static int[] dx = {0, 1, 0, -1};
-    private static int[] dy = {1, 0, -1, 0};
-    private static int result;
+    static int N, min;
+    static int[][] map;
+    static boolean[][] visited;
+    static int[] dx = {0, 1, 0, -1};
+    static int[] dy = {1, 0, -1, 0};
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
         N = Integer.parseInt(br.readLine());
         map = new int[N][N];
-        check = new int[N][N];
         visited = new boolean[N][N];
-        result = Integer.MAX_VALUE;
-        // 입력
+        min = Integer.MAX_VALUE;
+
         for (int i = 0; i < N; i++) {
-            StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+            StringTokenizer st = new StringTokenizer(br.readLine());
             for (int j = 0; j < N; j++) {
                 map[i][j] = Integer.parseInt(st.nextToken());
             }
         }
 
-        int cnt = 1;
+        int num = 1;
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                if (map[i][j] != 0 && !visited[i][j] && check[i][j] == 0) {
-                    check[i][j] = cnt;
-                    bfs(i, j, cnt);
-                    cnt++;
+                if (!visited[i][j] && map[i][j] == 1) {
+                    divide(i, j, num++);
                 }
             }
         }
 
+        visited = new boolean[N][N];
+
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                if (map[i][j] != 0 && check[i][j] != 0) { // 섬일 때
-                    visited = new boolean[N][N];    // 방문 초기화
-                    bfs(i, j, check[i][j], 0);  // bfs 시작
+                if (map[i][j] != 0) {
+                    visited = new boolean[N][N];
+                    path(i, j, map[i][j]);
                 }
             }
         }
-        System.out.println(result);
+
+        System.out.println(min);
     }
 
-    public static void bfs(int a, int b, int cnt) {   // 연결된 섬끼리 같은 번호로 묶기
-        Queue<int[]> queue = new LinkedList<>();
-        visited[a][b] = true;
-        queue.add(new int[]{a, b});
+    public static void path(int i, int j, int num) {
+        Queue<int[]> queue = new ArrayDeque<>();
+        visited[i][j] = true;
+        queue.offer(new int[]{i, j, 0});
 
         while (!queue.isEmpty()) {
             int[] cur = queue.poll();
             int x = cur[0];
             int y = cur[1];
+            int dis = cur[2];
 
-            for (int i = 0; i < 4; i++) {
-                int nx = x + dx[i];
-                int ny = y + dy[i];
-                if (nx >= 0 && ny >= 0 && nx < N && ny < N && !visited[nx][ny] && map[nx][ny] != 0) { // 범위 안이고 방문 안했고, 바다 아닐 때
-                    queue.add(new int[]{nx, ny});
+            // 다른 섬에 도달함
+            if (map[x][y] != 0 && map[x][y] != num) {
+                min = Math.min(min, dis - 1);
+            }
+
+            for (int d = 0; d < 4; d++) {
+                int nx = x + dx[d];
+                int ny = y + dy[d];
+
+                if (nx < 0 || ny < 0 || nx >= N || ny >= N || visited[nx][ny]) continue;
+
+                // 같은 섬
+                if (map[nx][ny] == num) {
+                    queue.offer(new int[]{nx, ny, dis});
                     visited[nx][ny] = true;
-                    check[nx][ny] = cnt;
+                } else if(map[nx][ny] != num) {
+                    queue.offer(new int[]{nx, ny, dis + 1});
+                    visited[nx][ny] = true;
                 }
             }
         }
     }
 
-    public static void bfs(int x, int y, int c, int dist) {
-        Queue<int[]> q = new LinkedList<>();
-        q.add(new int[]{x,y,c,dist});
-        visited[x][y] = true;   // 방문 처리
-        while(!q.isEmpty()){
-            int[] cur = q.poll();
+    public static void divide(int i, int j, int num) {
+        Queue<int[]> queue = new ArrayDeque<>();
+        queue.offer(new int[]{i, j});
+        visited[i][j] = true;
+        map[i][j] = num;
 
-            int cx = cur[0];
-            int cy = cur[1];
-            int cc = cur[2];    // 같은 섬인지 확인
-            int cd = cur[3];    // 거리 확인
+        while (!queue.isEmpty()) {
+            int[] cur = queue.poll();
+            for (int d = 0; d < 4; d++) {
+                int nx = cur[0] + dx[d];
+                int ny = cur[1] + dy[d];
 
-            if(check[cx][cy] != cc && check[cx][cy] != 0){    // 다른 섬에 도착했을 때 + 바다 아닐 때
-                result = Math.min(result, cd-1);  //  더 짧은 거리 갱신
-            }
-
-            for(int i=0; i<4; i++){
-                int nx = cx+dx[i];
-                int ny = cy+dy[i];
-
-                if(nx>=0 && ny>=0 && nx<N && ny<N && !visited[nx][ny]){ // 범위 안이고 방문 안했을 때
-                    if(check[nx][ny] == cc){    // 같은 섬일 때
-                        q.add(new int[]{nx,ny,cc, cd}); // 섬의 가장자리부터 시작해야 하기 때문에 cd 그대로
-                        visited[nx][ny] = true;
-                    }
-                    if(check[nx][ny] != cc) {   // 같은 섬이 아닐 때만 넣기
-                        q.add(new int[]{nx, ny, cc, cd + 1});  // 거리 하나 더 늘려서 넣기
-                        visited[nx][ny] = true; // 방문 처리
-                    }
-                }
+                if (nx < 0 || ny < 0 || nx >= N || ny >= N || visited[nx][ny] || map[nx][ny] != 1) continue;
+                queue.offer(new int[]{nx, ny});
+                visited[nx][ny] = true;
+                map[nx][ny] = num;
             }
         }
     }

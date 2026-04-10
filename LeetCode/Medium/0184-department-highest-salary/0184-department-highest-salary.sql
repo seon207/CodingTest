@@ -1,2 +1,2 @@
-SELECT B.NAME AS DEPARTMENT, A.NAME AS EMPLOYEE, A.SALARY AS SALARY FROM EMPLOYEE A LEFT JOIN DEPARTMENT B ON A.DEPARTMENTID = B.ID WHERE (A.DEPARTMENTID, A.SALARY) IN (SELECT DEPARTMENTID, MAX(SALARY) SAL FROM EMPLOYEE GROUP BY DEPARTMENTID);
 
+select b.name as Department , a.name as Employee , a.salary as Salary from employee a join department b on a.departmentId = b.id,  (select departmentId,max(salary) as salary from employee group by departmentId) c where a.departmentId = c.departmentId and c.salary = a.salary;

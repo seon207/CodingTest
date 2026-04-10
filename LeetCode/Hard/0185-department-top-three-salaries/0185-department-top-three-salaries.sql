@@ -1,1 +1,2 @@
-SELECT A.NAME DEPARTMENT, C.NAME EMPLOYEE, C.SALARY SALARY FROM (SELECT DEPARTMENTID, NAME, DENSE_RANK() OVER(PARTITION BY DEPARTMENTID ORDER BY SALARY DESC) as ranking, SALARY FROM EMPLOYEE) C JOIN DEPARTMENT A ON C.DEPARTMENTID = A.ID WHERE C.RANKING <= 3;
+select department, employee, salary from
+(select b.name as Department, a.name as employee, a.salary as salary, dense_rank() over(partition by departmentId order by salary desc) as ranked from employee a join department b on a.departmentId = b.id) ranking where ranked <=3;

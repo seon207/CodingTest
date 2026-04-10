@@ -1,3 +1,1 @@
--- SELECT DISTINCT A.NUM AS ConsecutiveNums FROM LOGS A JOIN LOGS B ON A.ID + 1 = B.ID AND A.NUM = B.NUM JOIN LOGS C ON A.ID + 2 = C.ID AND A.NUM = C.NUM;
-
-SELECT DISTINCT A.NUM AS ConsecutiveNums FROM (SELECT NUM, LEAD(NUM, 1) OVER (ORDER BY ID) AS CON1, LEAD(NUM,2) OVER (ORDER BY ID) AS CON2 FROM LOGS) A WHERE A.NUM = A.CON1 AND A.CON1 = A.CON2;
+select distinct(num) ConsecutiveNums from(select lag(num, 1) over(order by id) prev, lead(num,1) over(order by id) next, num from logs) l where prev = num and num = next;

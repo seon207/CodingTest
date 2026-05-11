@@ -1,22 +1,20 @@
-import java.io.*;
 import java.util.*;
 
 class Solution
 {
-    static Stack<Character> stack;
     public int solution(String s)
     {
-        stack = new Stack<>();
-        int answer = 0;
+        Stack<Character> stack = new Stack<Character>();
+        int answer = -1;
         for(int i = 0; i < s.length(); i++){
-            if(stack.isEmpty()){    // 비어있으면 추가
-                stack.push(s.charAt(i));
+            char c = s.charAt(i);
+            if(stack.isEmpty()){
+                stack.push(c);
             }
-            else if(s.charAt(i) == stack.peek()){
+            else if(stack.peek() == c){
                 stack.pop();
-            }
-            else{
-                stack.push(s.charAt(i));
+            }else{
+                stack.push(c);
             }
         }
         
@@ -26,6 +24,7 @@ class Solution
             answer = 0;
         }
         
+
         return answer;
     }
 }

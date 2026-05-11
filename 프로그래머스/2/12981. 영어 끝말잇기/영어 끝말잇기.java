@@ -1,40 +1,39 @@
-import java.io.*;
 import java.util.*;
 
 class Solution {
-    static Map<String, Integer> map;
     public int[] solution(int n, String[] words) {
-        map = new HashMap<>();
-        int turn = 0;
-        map.put(words[0], 1);
+        Set<String> set = new HashSet<String>();
+        int[] answer = {};
+
+        int count = 0;
+        char last = words[0].charAt(words[0].length()-1);
+        set.add(words[0]);
         for(int i = 1; i < words.length; i++){
-            String bword = words[i-1];
-            String word = words[i];
-            char last = bword.charAt(bword.length()-1);
-            char fword = word.charAt(0);
-            if(fword != last){  // 연결되지 않는 단어
-                turn = i;
+            String w = words[i];
+            char first = w.charAt(0);
+            if(last != first){  // 끝
+                count = i;
+                break;
+            }
+            if(set.contains(w)){    // 이미 했던 단어
+                count = i;
                 break;
             }
             
-            if(map.get(words[i]) != null){  // 존재하는 단어
-                turn = i;
-                break;
-            }else{  // 존재하지 않음
-                map.put(words[i], 1);
-            }
-            
+            set.add(w);
+            last = w.charAt(w.length() - 1);
         }
         
-        
-        int[] answer = {};
-        if(turn == 0){
+        if(count == 0){
             answer = new int[]{0,0};
         }else{
-            answer = new int[]{turn % n +1, turn / n +1};
-        }
         
-
+        int num = count % n + 1;
+        int turn = count / n + 1;
+        answer = new int[]{num, turn};
+        }
+    
+        
         return answer;
     }
 }
